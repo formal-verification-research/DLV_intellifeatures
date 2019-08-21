@@ -92,7 +92,7 @@ def initialiseRegionActivation(model,manipulated,image):
             nextNumSpan[i] = numSpan
 
     else:
-        print "initialiseRegionActivation: Unknown layer type ... "
+        print ("initialiseRegionActivation: Unknown layer type ... ")
 
     return (nextSpan,nextNumSpan,numDimsToMani)
 
@@ -182,7 +182,7 @@ def myFindFromArea3D(image, manipulated, avoid, nimage, ps, numDimsToMani, ks):
     for i in range(len(nimage)):
         (x,y,z) = nimage[i]
         if ((y,z) in ps or len(ps) == 0) and ((x,y,z) not in ks) and ((x,y,z) not in manipulated):
-            print('selected index: {}'.format(i))
+            #print('selected index: {}'.format(i))
             return nimage[i]
 
 

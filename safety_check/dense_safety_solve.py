@@ -76,7 +76,7 @@ def dense_safety_solve(nfeatures,nfilters,filters,bias,input,activations,pcl,pgl
 
     # If thread is still active
     if p.is_alive():
-        print "Solver running more than timeout seconds (default="+str(timeout)+"s)! Skip it"
+       # print "Solver running more than timeout seconds (default="+str(timeout)+"s)! Skip it"
         p.terminate()
         p.join()
     else:
@@ -96,7 +96,7 @@ def dense_safety_solve(nfeatures,nfilters,filters,bias,input,activations,pcl,pgl
             nprint( "unsatisfiable!")
             return (False, input)
     else:
-        print "unsatisfiable!"
+        #print "unsatisfiable!"
         return (False, input)
 
 

@@ -59,8 +59,8 @@ def bp(input,activations):
                 s.add(eval(string))
                 c += 1
 
-        print "Number of variables per feature: " + str(d)
-        print "Number of clauses per feature: " + str(c)
+        print ("Number of variables per feature: " + str(d))
+        print ("Number of clauses per feature: " + str(c))
     
         if s.check() == sat: 
             inputVars = [ (l,x,y,eval("variable[0,"+ str(l+1) +"," + str(x) +"," + str(y)+ "]")) for x in range(xsize) for y in range(ysize) ]
@@ -72,7 +72,7 @@ def bp(input,activations):
                 else:
                     activations[l][i][j] = input[l][i][j] 
         else: 
-            print "unsatisfiable! "
+            print ("unsatisfiable! ")
             return (False, input)  
                               
     if nfeatures == 1: image = np.squeeze(activations)

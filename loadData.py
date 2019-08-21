@@ -51,7 +51,7 @@ def loadData():
 
         (X_train, Y_train, X_test, Y_test, batch_size, nb_epoch) = NN.read_mnist_dataset()
 
-        print "Building network model ......"
+        print ("Building network model ......")
         model = NN.build_mnist_model()
 
         start_time = time.time()
@@ -72,7 +72,9 @@ def loadData():
 
     elif whichMode == "read" and dataset == "mnist":
         print("Start loading model ... ")
-        model = NN.read_model_from_file('%s/mnist.mat'%directory_model_string,'%s/mnist.json'%directory_model_string)
+        
+        #model = NN.read_model_from_file('%s/mnist.mat'%directory_model_string,'%s/mnist.json'%directory_model_string)
+        model = NN.read_model_from_file('%s/mnist_r.hd5'%directory_model_string)
         print("Model loaded!")
         #test(model)
 
@@ -80,7 +82,7 @@ def loadData():
 
         (X_train,Y_train,X_test,Y_test, img_channels, img_rows, img_cols, batch_size, nb_classes, nb_epoch, data_augmentation) = NN.read_dataset()
 
-        print "Building network model ......"
+        print ("Building network model ......")
         model = NN.build_model(img_channels, img_rows, img_cols, nb_classes)
 
         X_train = X_train.astype('float32')
@@ -171,7 +173,7 @@ def loadData():
 
         (img_channels, img_rows, img_cols, batch_size, nb_classes, nb_epoch, data_augmentation) = NN.read_dataset()
 
-        print "Building network model ......"
+        print ("Building network model ......")
         model = NN.build_model(img_channels, img_rows, img_cols, nb_classes)
 
         # load weights
@@ -199,7 +201,8 @@ def loadData():
         N_tests = 1000
         x_train, y_train, x_test, y_test = NN.load_data(N_samples,N_tests)
 
-        print "Building network model ......"
+        print ("Building network model ......")
+        
         model = NN.build_model()
 
         # plot(model, to_file='twoDcurve_pic/model.png')
@@ -252,6 +255,6 @@ def test(model):
     # prediction after training
     start_time = time.time()
     y_predicted = model.predict(X_test)
-    print y_predicted
+    print (y_predicted)
 
     print("Testing time: --- %s seconds ---" % (time.time() - start_time))

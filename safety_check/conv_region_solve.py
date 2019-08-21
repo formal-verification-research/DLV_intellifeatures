@@ -122,7 +122,7 @@ def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,
 
             # If thread is still active
             if p.is_alive():
-                print "Solver running more than timeout seconds (default="+str(timeout)+"s)! Skip it"
+                #print "Solver running more than timeout seconds (default="+str(timeout)+"s)! Skip it"
                 p.terminate()
                 p.join()
             else:
@@ -136,7 +136,7 @@ def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,
                     #print "unsatisfiable!" + str(nextNumSpan[(k,x,y)])
                     nextNumSpan[(k,x,y)] = nextNumSpan[(k,x,y)] + 1
             else:
-                print "timeout!"
+                #print "timeout!"
                 break
         
     nextNumSpan2 = {}

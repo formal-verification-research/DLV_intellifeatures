@@ -68,7 +68,8 @@ class searchTree:
         #else: return n
         return pi
                 
-    def parentIndex(self,(ci,pi)): 
+    def parentIndex(self,cipi):
+        ci,pi=cipi
         for (k,d) in self.images.keys(): 
             if k == pi: 
                 return (k,d)

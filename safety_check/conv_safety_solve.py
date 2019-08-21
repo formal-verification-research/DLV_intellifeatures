@@ -109,7 +109,7 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
 
     # If thread is still active
     if p.is_alive():
-        print "Solver running more than timeout seconds (default="+str(timeout)+"s)! Skip it"
+       # print "Solver running more than timeout seconds (default="+str(timeout)+"s)! Skip it"
         p.terminate()
         p.join()
     else:
@@ -131,7 +131,7 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
             nprint("unsatisfiable!")
             return (False, input)
     else:
-        print "timeout! "
+        #print "timeout! "
         return (False, input)
 
 def getDecimalValue(v0): 

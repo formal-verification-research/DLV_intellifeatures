@@ -91,7 +91,7 @@ def initialiseRegionDerivative(model,image,manipulated):
             nextNumSpan[i] = numSpan
             
     else: 
-        print "initialiseRegionDerivative: Unknown layer type ... "
+        print ("initialiseRegionDerivative: Unknown layer type ... ")
         
     return (nextSpan,nextNumSpan,numDimsToMani)
     
@@ -265,7 +265,8 @@ def derivative(model,image,manipulated,layer,layerUpTo):
                     filter = [ w for ((p1,c1),(p2,c),w) in wv1 if c1 == l+1 and c == k+1 ]
                     bias = [ w for (p2,c,w) in bv1 if c == k+1 ]
                     if len(filter) == 0 or len(bias) == 0 : 
-                        print "error: bias =" + str(bias) + "\n filter = " + str(filter)
+                        #print "error: bias =" + str(bias) + "\n filter = " + str(filter)
+                        pass
                     else:
                         filter = filter[0]
                         bias = bias[0]
@@ -287,7 +288,8 @@ def derivative(model,image,manipulated,layer,layerUpTo):
                     filter = [ w for ((p1,c1),(p,c),w) in wv if c1 == l+1 and c == k+1 ]
                     bias = [ w for (p,c,w) in bv if c == k+1 ]
                     if len(filter) == 0 or len(bias) == 0 : 
-                        print "error: bias =" + str(bias) + "\n filter = " + str(filter)
+                        #print "error: bias =" + str(bias) + "\n filter = " + str(filter)
+                        pass
                     else:
                         filter = filter[0]
                         bias = bias[0]
@@ -356,6 +358,6 @@ def derivative(model,image,manipulated,layer,layerUpTo):
                 derivatives[l] = nextValue
             return derivatives
         else: 
-            print "derivative: new layer type: " + str(layerType)
-            
+            #print "derivative: new layer type: " + str(layerType)
+            pass
             

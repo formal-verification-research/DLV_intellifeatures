@@ -134,7 +134,7 @@ def conv_precision_solve(nfeatures,nfilters,filters,bias,activations0,activation
 
                     # If thread is still active
                     if p.is_alive():
-                        print "Solver running more than timeout seconds (default="+str(timeout)+"s)! Skip it"
+                        print ("Solver running more than timeout seconds (default="+str(timeout)+"s)! Skip it")
                         p.terminate()
                         p.join()
                     else:
@@ -146,9 +146,9 @@ def conv_precision_solve(nfeatures,nfilters,filters,bias,activations0,activation
                         else:
                             npk = npk / float(factor)
                             lowered = True
-                            print "lower the precision to " + str(npk)
+                            #print "lower the precision to " + str(npk)
                     else:
-                        print "timeout!"
+                        #print "timeout!"
                         break
         
     #print(npk)

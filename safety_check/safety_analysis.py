@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/enev python
 
 """
 author: Xiaowei Huang
@@ -47,17 +47,17 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
     (originalSpanass,originalConfident) = NN.predictWithImage(model,originalImage)
 
     classstr = "the right class is " + (str(dataBasics.LABELS(int(originalSpanass))))
-    print classstr
+    print (classstr)
     classstr = "the confidence is " + (str(originalConfident))
-    print classstr
+    print (classstr)
 
     if tempFile == "enabled":
         #dataBasics.save(index[0],originalImage,directory_pic_string+"/temp%s_%s.png"%(layer2Consider,index))
         dataBasics.save(index[0],originalImage,directory_pic_string+"/temp.png")
-        print "please refer to the file "+directory_pic_string+"/temp.png for the image under processing ..."
+        print ("please refer to the file "+directory_pic_string+"/temp.png for the image under processing ...")
 
     #print "please refer to the file "+directory_pic_string+"/temp%s_%s.png for the image under processing ..."%(layer2Consider,index)
-    print "safety analysis for layer %s ... "%(layer2Consider)
+    #print (safety analysis for layer %s ... "%(layer2Consider)
 
     # wk is the set of inputs whose classes are different with the original one
     wk = []
@@ -80,7 +80,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
         allRounds = reduce(mul,map(lambda x: 2*x + 1, numSpan.values()),1)
     elif enumerationMethod == "point":
         allRounds = 1
-    print "%s regions need to be checked. "%(allRounds)
+    #print "%s regions need to be checked. "%(allRounds)
 
     # counter_numSpan tracks the working point
     # InitialisedNumSpan remembers
@@ -216,7 +216,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
                 newClassStr = dataBasics.LABELS(int(newClass))
                 origClassStr = dataBasics.LABELS(int(originalSpanass))
                 classstr = "Class changed! from " + str(origClassStr) +" into " + str(newClassStr)
-                print classstr
+                print (classstr)
 
                 path1 = "%s/%s_%s_modified_into_%s_with_confidence_%s.png"%(directory_pic_string,imageIndex,origClassStr,newClassStr,confident)
                 dataBasics.save(index[0],newInput, path1)
@@ -351,7 +351,8 @@ def conv_solve_prep(model,dataBasics,string,originalLayer2Consider,layer2Conside
             filter = [ w for ((p1,c1),(p,c),w) in wv if c1 == l+1 and c == k+1 ]
             bias = [ w for (p,c,w) in bv if c == k+1 ]
             if len(filter) == 0 or len(bias) == 0 :
-                print "error: bias =" + str(bias) + "\n filter = " + str(filter)
+                #print "error: bias =" + str(bias) + "\n filter = " + str(filter)
+                pass
             else:
                 filter = filter[0]
                 bias = bias[0]
@@ -554,8 +555,8 @@ def conv_bp_prep(model,input,wv,bv,activations):
     nfilters = numberOfFilters(wv)
     nfeatures = numberOfFeatures(wv)
 
-    print "number of filters: " + str(nfilters)
-    print "number of features in the previous layer: " + str(nfeatures)
+    #print "number of filters: " + str(nfilters)
+    #print "number of features in the previous layer: " + str(nfeatures)
 
     (_, sizex, sizey) = activations.shape
     sizex += 2
@@ -569,7 +570,8 @@ def conv_bp_prep(model,input,wv,bv,activations):
             filter = [ w for ((p1,c1),(p,c),w) in wv if c1 == l+1 and c == k+1 ]
             bias = [ w for (p,c,w) in bv if c == k+1 ]
             if len(filter) == 0 or len(bias) == 0 :
-                print "error: bias =" + str(bias) + "\n filter = " + str(filter)
+               # print "error: bias =" + str(bias) + "\n filter = " + str(filter)
+               pass
             else:
                 filter = filter[0]
                 bias = bias[0]

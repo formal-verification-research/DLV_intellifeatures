@@ -212,7 +212,7 @@ def getWeightVector(model,layer2Consider):
     biasVector = []
 
     for layer in model.layers:
-    	 index=model.layers.index(layer)
+         index=model.layers.index(layer)
          h=layer.get_weights()
          
          if len(h) > 0 and index in [1,3,6,8,11,13,15,18,20,22,25,27,29] and index <= layer2Consider: 

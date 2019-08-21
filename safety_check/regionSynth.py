@@ -46,7 +46,7 @@ def regionSynth(model,dataset,image,manipulated,layer2Consider,span,numSpan,numD
     activations1 = NN.getActivationValue(model,layer2Consider,image)
 
     if layerType == "Convolution2D":  
-        print "convolutional layer, synthesising region ..."
+       # print "convolutional layer, synthesising region ..."
         numDimsToMani = getManipulatedFeatureNumber(model,numDimsToMani,layer2Consider)
         if len(activations1.shape) == 3: 
             inds = getTop3D(model,image,activations1,manipulated,span.keys(),numDimsToMani,layer2Consider)
@@ -59,7 +59,7 @@ def regionSynth(model,dataset,image,manipulated,layer2Consider,span,numSpan,numD
         (nextSpan,nextNumSpan) = conv_region_prep(model,dataBasics,nfeatures,nfilters,wv2Consider,bv2Consider,activations0,activations1,span,numSpan,inds,numDimsToMani)
     
     elif layerType == "Dense":
-        print "dense layer, synthesising region ..."
+        #print "dense layer, synthesising region ..."
         numDimsToMani = getManipulatedFeatureNumber(model,numDimsToMani,layer2Consider)
         inds = getTop(model,image,activations1,manipulated,numDimsToMani,layer2Consider)
         #print(inds)
@@ -70,12 +70,12 @@ def regionSynth(model,dataset,image,manipulated,layer2Consider,span,numSpan,numD
         (nextSpan,nextNumSpan) = dense_solve_prep(model,dataBasics,nfeatures,nfilters,wv2Consider,bv2Consider,activations0,activations1,span,numSpan,inds)
         
     elif layerType == "InputLayer":
-        print "inputLayer layer, synthesising region ..."
+        #print "inputLayer layer, synthesising region ..."
         nextSpan = copy.deepcopy(span)
         nextNumSpan = copy.deepcopy(numSpan)
         
     elif layerType == "MaxPooling2D":
-        print "MaxPooling2D layer, synthesising region ..."
+        #print "MaxPooling2D layer, synthesising region ..."
         nextSpan = {}
         nextNumSpan = {}
         for key in span.keys():
@@ -89,7 +89,7 @@ def regionSynth(model,dataset,image,manipulated,layer2Consider,span,numSpan,numD
                 print("error: ")
                     
     elif layerType == "Flatten":
-        print "Flatten layer, synthesising region ..."
+        #print "Flatten layer, synthesising region ..."
         nextSpan = copy.deepcopy(span)
         nextNumSpan = copy.deepcopy(numSpan)
         nextSpan = {}
@@ -105,7 +105,7 @@ def regionSynth(model,dataset,image,manipulated,layer2Consider,span,numSpan,numD
                 nextSpan[ind] = span[key]
                 nextNumSpan[ind] = numSpan[key]
     else: 
-        print "Unknown layer type %s... "%(str(layerType))
+        #print "Unknown layer type %s... "%(str(layerType))
         nextSpan = copy.deepcopy(span)
         nextNumSpan = copy.deepcopy(numSpan)
     return (nextSpan,nextNumSpan,numDimsToMani)
@@ -129,7 +129,8 @@ def conv_region_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,acti
             filter = [ w for ((p1,c1),(p,c),w) in wv if c1 == l+1 and c == k+1 ]
             bias = [ w for (p,c,w) in bv if c == k+1 ]
             if len(filter) == 0 or len(bias) == 0 : 
-                print "error: bias =" + str(bias) + "\n filter = " + str(filter)
+                pass
+                # print "error: bias =" + str(bias) + "\n filter = " + str(filter)
             else:
                 filter = filter[0]
                 bias = bias[0]
@@ -140,7 +141,7 @@ def conv_region_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,acti
             filterCollection[l,k] = flipedFilter
             #print filter.shape
     (nextSpan,nextNumSpan) = conv_region_solve(nfeatures,nfilters,filterCollection,biasCollection,activations0,activations1,span,numSpan,inds,numDimsToMani)
-    print("found the region to work ")
+   # print("found the region to work ")
     
     return (nextSpan,nextNumSpan)
     

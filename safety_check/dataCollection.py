@@ -3,11 +3,13 @@
 """
 author: Xiaowei Huang
 """
+from __future__ import division
 
 import numpy as np
 import time
 import os
 import copy
+
 
 from configuration import directory_statistics_string
 
@@ -45,29 +47,37 @@ class dataCollection:
 
     def provideDetails(self):
         self.fileHandler.write("running time: \n")
-        for i,r in self.runningTime.iteritems():
+        for i,r in self.runningTime.items():
             self.fileHandler.write("%s:%s\n"%(i,r))
 
         self.fileHandler.write("manipulation percentage: \n")
-        for i,r in self.manipulationPercentage.iteritems():
+        for i,r in self.manipulationPercentage.items():
             self.fileHandler.write("%s:%s\n"%(i,r))
 
         self.fileHandler.write("Euclidean distance: \n")
-        for i,r in self.euclideanDistance.iteritems():
+        for i,r in self.euclideanDistance.items():
             self.fileHandler.write("%s:%s\n"%(i,r))
 
         self.fileHandler.write("confidence: \n")
-        for i,r in self.confidence.iteritems():
+        for i,r in self.confidence.items():
             self.fileHandler.write("%s:%s\n"%(i,r))
         self.fileHandler.write("\n")
 
     def summarise(self):
         art = sum(self.runningTime.values()) / len(self.runningTime.values())
         self.fileHandler.write("average running time: %s\n"%(art))
-        amp = sum(self.manipulationPercentage.values()) / len(self.manipulationPercentage.values())
+        try:
+            amp = sum(self.manipulationPercentage.values()) /float(len(self.manipulationPercentage.values()))
+        except ZeroDivisionError:
+            amp = 0
         self.fileHandler.write("average manipulation percentage: %s\n"%(amp))
-        eudist = sum(self.euclideanDistance.values()) / len(self.euclideanDistance.values())
+        try:
+            eudist = sum(self.euclideanDistance.values()) / len(self.euclideanDistance.values())
+        except ZeroDivisionError:
+            eudist = 0
         self.fileHandler.write("average euclidean distance: %s\n"%(eudist))
 
     def close(self):
         self.fileHandler.close()
+
+        

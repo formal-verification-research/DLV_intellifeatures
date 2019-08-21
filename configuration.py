@@ -84,8 +84,10 @@ featureDims = args.numfeaturedims
 
 def getAverages():
     if dataset == "mnist":
-        (X_train, Y_train, X_test, Y_test, batch_size, nb_epoch) = NN.read_dataset()
-        model = NN.read_model_from_file('%s/mnist.mat'%directory_model_string,'%s/mnist.json'%directory_model_string)
+        (X_train, Y_train, X_test, Y_test, batch_size,epoch) = NN.read_dataset()
+        #model = NN.read_model_from_file('%s/mnist.mat'%directory_model_string,'%s/mnist.json'%directory_model_string)
+        model = NN.read_model_from_file('%s/mnist_r.hd5'%directory_model_string)
+    
     elif dataset == "cifar10":
         (X_train,Y_train,X_test,Y_test, img_channels, img_rows, img_cols, batch_size, nb_classes, nb_epoch, data_augmentation) = NN.read_dataset()
         model = NN.read_model_from_file(img_channels, img_rows, img_cols, nb_classes, '%s/cifar10.mat'%directory_model_string,'%s/cifar10.json'%directory_model_string)
@@ -268,7 +270,7 @@ def getManipulatedFeatureNumber(model,numDimsToMani,layer2Consider):
     # get the type of the current layer
     layerType = [ lt for (l,lt) in config if layer2Consider == l ]
     if len(layerType) > 0: layerType = layerType[0]
-    else: print "cannot find the layerType"
+    else: print ("cannot find the layerType")
 
     if layerType == "Convolution2D":
         return numDimsToMani # + 1

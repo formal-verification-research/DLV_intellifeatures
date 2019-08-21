@@ -7,13 +7,15 @@ import numpy as np
 import struct
 from array import array as pyarray
 from PIL import Image
-
+import json
 from keras.models import model_from_json
+from keras.models import load_model
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Convolution2D, MaxPooling2D
+from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras import backend as K
 from keras.utils import np_utils
+from keras.utils.conv_utils import convert_kernel
 
 # for mnist
 from keras.datasets import mnist
@@ -22,6 +24,10 @@ from keras.datasets import mnist
 #
 
 import mnist as mm
+
+import glob
+import h5py
+import os
 
 
 batch_size = 128
@@ -78,22 +84,27 @@ def build_model():
     """
 
     model = Sequential()
-
-    model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
-                            border_mode='valid',
-                            input_shape=(1, img_rows, img_cols)))
-    model.add(Activation('relu'))
-    model.add(Convolution2D(nb_filters, nb_conv, nb_conv))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
-    model.add(Dropout(0.25))
+    
+    model.add(Conv2D(trainable=True, filters = nb_filters, use_bias=True, bias_regularizer=None, input_dtype="float32", batch_input_shape=[None,img_rows, img_cols,1], activation="relu", kernel_initializer="glorot_uniform", kernel_constraint=None, activity_regularizer=None, padding="valid", strides=[1, 1], name="convolution2d_1", bias_constraint=None, data_format="channels_last", kernel_regularizer=None, kernel_size=(nb_conv, nb_conv)))
+    #model.add(Conv2D(nb_filters, (nb_conv, nb_conv), padding='valid', input_shape=(1, img_rows, img_cols)))
+    #model.add(Activation('relu'))
+    model.add(Conv2D(kernel_initializer="glorot_uniform", kernel_constraint=None, activity_regularizer=None, trainable=True, padding="valid", strides=[1, 1], filters=32, use_bias=True, name="convolution2d_2", bias_regularizer=None, bias_constraint=None, data_format="channels_last", kernel_regularizer=None, activation="relu", kernel_size=(nb_conv, nb_conv)))
+    #model.add(Conv2D(nb_filters, (nb_conv, nb_conv)))
+    #model.add(Activation('relu'))
+    model.add(MaxPooling2D(name="maxpooling2d_1", trainable=True, data_format="channels_last", pool_size=[nb_pool, nb_pool], padding="valid", strides=[2, 2]))
+    #model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
+    model.add(Dropout(rate=0.25, trainable=True, name="dropout_1"))
+    #model.add(Dropout(rate=0.25, trainable = True,))
 
     model.add(Flatten())
-    model.add(Dense(128))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(nb_classes))
-    model.add(Activation('softmax'))
+    model.add(Dense(name="dense_1", bias_regularizer=None, bias_constraint=None, activity_regularizer=None, trainable=True, kernel_constraint=None, kernel_regularizer=None, input_dim=None, units=128, kernel_initializer="glorot_uniform", use_bias=True, activation="relu"))
+    #model.add(Dense(units=128))
+    #model.add(Activation('relu'))
+    model.add(Dropout(rate=0.5, trainable=True, name="dropout_2"))
+    #model.add(Dropout(rate=0.5, trainable = True,))
+    model.add(Dense(name="dense_2", bias_regularizer=None, bias_constraint=None, activity_regularizer=None, trainable=True, kernel_constraint=None, kernel_regularizer=None, input_dim=None, units=nb_classes, kernel_initializer="glorot_uniform", use_bias=True, activation="softmax"))
+    #model.add(Dense(units=nb_classes))
+    #model.add(Activation('softmax'))
 
     model.compile(loss='categorical_crossentropy',
                   optimizer='adadelta',
@@ -103,7 +114,7 @@ def build_model():
 
 
 
-def read_model_from_file(weightFile,modelFile):
+def read_model_from_file(modelFile):
     """
     define neural network model
     :return: network model
@@ -112,13 +123,24 @@ def read_model_from_file(weightFile,modelFile):
     model = build_model()
     model.summary()
 
-    weights = sio.loadmat(weightFile)
-    model = model_from_json(open(modelFile).read())
-    for (idx,lvl) in [(1,0),(2,2),(3,7),(4,10)]:
+    #weights = sio.loadmat(weightFile)
+    #model = model_from_json(open(modelFile).read())
 
-        weight_1 = 2 * idx - 2
-        weight_2 = 2 * idx - 1
-        model.layers[lvl].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+    model = load_model(modelFile, compile=False)
+    
+
+
+   # for (idx,lvl) in [(1,0),(2,2),(3,7),(4,10)]:
+
+    #    weight_1 = 2 * idx - 2
+     #  weight_2 = 2 * idx - 1
+
+      #  w1 = weights['weights'][0,weight_1]
+        #w1 = np.transpose(w1, (3, 2, 1, 0))
+       # w2 = weights['weights'][0,weight_2].flatten()
+       # print(w1.shape)
+
+       # model.layers[lvl].set_weights([w1, w2])
 
     return model
 
@@ -181,9 +203,8 @@ def getWeightVector(model, layer2Consider):
     biasVector = []
 
     for layer in model.layers:
-    	 index=model.layers.index(layer)
+         index=model.layers.index(layer)
          h=layer.get_weights()
-
          if len(h) > 0 and index in [0,2]  and index <= layer2Consider:
          # for convolutional layer
              ws = h[0]
@@ -233,7 +254,9 @@ def getWeightVector(model, layer2Consider):
 def getConfig(model):
 
     config = model.get_config()
-    config = [ getLayerName(dict) for dict in config ]
+    config = json.loads((json.dumps(config)))
+    #print(config)
+    config = [ getLayerName(dict) for dict in config['layers'] ]
     config = zip(range(len(config)),config)
     return config
 

@@ -5,6 +5,7 @@ main file
 
 author: Xiaowei Huang
 """
+from __future__ import division
 
 import sys
 sys.path.append('networks')
@@ -16,6 +17,9 @@ import numpy as np
 import copy
 import random
 # import matplotlib.pyplot as plt
+
+import os
+os.environ["MKL_THREADING_LAYER"] = "GNU"
 
 from loadData import loadData
 from regionSynth import regionSynth, initialiseRegion
@@ -37,12 +41,13 @@ def main():
     # handle a set of inputs starting from an index
     if dataProcessing == "batch":
         for whichIndex in range(startIndexOfImage,startIndexOfImage + dataProcessingBatchNum):
-            print "\n\nprocessing input of index %s in the dataset: " %(str(whichIndex))
+            #print "\n\nprocessing input of index %s in the dataset: " %(str(whichIndex))
+            print (f"\n\n processing input of index {str(whichIndex)} in the dataset: ")
             if task == "safety_check":
                 handleOne(model,dc,whichIndex)
     # handle a sinextNumSpane input
     else:
-        print "\n\nprocessing input of index %s in the dataset: " %(str(startIndexOfImage))
+        print (f"\n\nprocessing input of index {str(startIndexofImage)} in the dataset: ")
         if task == "safety_check":
             handleOne(model,dc,startIndexOfImage)
     if dataProcessing == "batch":
@@ -56,6 +61,7 @@ def main():
 # starting from the first hidden layer
 #
 ############################################################################
+re =""
 
 def handleOne(model,dc,startIndexOfImage):
 
@@ -85,8 +91,8 @@ def handleOne(model,dc,startIndexOfImage):
             # initialise a search tree
             st = searchTree(image,k)
             st.addImages(model,[image])
-            print "\nstart checking the safety of layer "+str(k)
-            print "the current context is %s"%(st.numSpans)
+            print (f"\nstart checking the safety of layer {str(k)}")
+            #print (f"the current context is {%(st.numSpans)}")
 
             (originalClass,originalConfident) = NN.predictWithImage(model,image)
             origClassStr = dataBasics.LABELS(int(originalClass))
@@ -95,6 +101,7 @@ def handleOne(model,dc,startIndexOfImage):
             dataBasics.save(-1,image, path0)
 
             # for every layer
+            global re 
             f = 0
             if numOfPointsAfterEachFeature == 1:
                 testNum = numOfFeatures
@@ -106,17 +113,17 @@ def handleOne(model,dc,startIndexOfImage):
                 imageIndex = copy.deepcopy(index)
 
                 howfar = st.getHowFar(index[0],0)
-                print "\nhow far is the current image from the original one: %s"%(howfar)
+                #print (f"\nhow far is the current image from the original one: {%(howfar)}")
 
                 # for every image
                 # start from the first hidden layer
                 t = 0
                 while True:
 
-                    print "current index: %s current layer: %s"%(str(index),t)
+                    print (f"current index: {str(index)} current layer: {t}")
                     # print "current layer: %s."%(t)
 
-                    print "how many dimensions have been changed: %s."%(len(st.manipulated[-1]))
+                   # print (f"how many dimensions have been changed: .{%(len(st.manipulated[-1])}")
 
                     # pick the first element of the queue
                     # print "1) get a manipulated input ..."
@@ -138,9 +145,9 @@ def handleOne(model,dc,startIndexOfImage):
                     (nextSpan,nextNumSpan,np) = precisionSynth(t,nextSpan,nextNumSpan)
                     #print "the precision is %s."%(np)
 
-                    print "dimensions to be considered: %s"%(nextSpan)
+                   # print (f"dimensions to be considered: {%(nextSpan)}")
                     #print "dimensions that have been considered before: %s"%(st.manipulated[t])
-                    print "spans for the dimensions: %s"%(nextNumSpan)
+                    #print (f"spans for the dimensions: {%(nextNumSpan)}")
 
                     if t == k:
                         # print "3) safety analysis ..."
@@ -150,23 +157,23 @@ def handleOne(model,dc,startIndexOfImage):
                         # nextSpan and nextNumSpan are revised by considering the precision np
                         (nextSpan,nextNumSpan,rs,wk,rk) = safety_analysis(model,dataset,t,startIndexOfImage,st,index,nextSpan,nextNumSpan,np)
 
-                        print "4) add new images ..."
+                        print (f"4) add new images ...")
                         random.seed(time.time())
                         if len(rk) > numOfPointsAfterEachFeature:
                             rk = random.sample(rk, numOfPointsAfterEachFeature)
                         diffs = diffImage(image0,rk[0])
-                        print("the dimensions of the images that are changed in the previous round: %s"%diffs)
+                       # print(f"the dimensions of the images that are changed in the previous round: {%diffs}")
                         if len(diffs) == 0: st.clearManipulated(k)
                         st.addImages(model,rk)
                         st.removeProcessed(imageIndex)
                         (re,percent,eudist) = reportInfo(image,rs,wk,numDimsToMani,howfar,image0)
                         break
                     else:
-                        print "3) add new intermediate node ..."
+                        print (f"3) add new intermediate node ...")
                         index = st.addIntermediateNode(image0,nextSpan,nextNumSpan,np,numDimsToMani,index)
                         re = False
                         t += 1
-                if re == True:
+                if  re == True:
                     dc.addManipulationPercentage(percent)
                     dc.addEuclideanDistance(eudist)
                     (ocl,ocf) = NN.predictWithImage(model,rk[0])
@@ -181,17 +188,17 @@ def handleOne(model,dc,startIndexOfImage):
             break
         k += 1
 
-    print("Please refer to the file %s for statistics."%(dc.fileName))
+    print(f"Please refer to the file {dc.fileName} for statistics.")
 
 
 def reportInfo(image,rs,wk,numDimsToMani,howfar,image0):
 
     # exit only when we find an adversarial example
     if wk == []:
-        print "no adversarial example is found in this layer."
+        print (f"no adversarial example is found in this layer.")
         return (False,0,0)
     else:
-        print "an adversarial example has been found."
+        print (f"an adversarial example has been found.")
         diffs = diffImage(image,image0)
         eudist = euclideanDistance(image,image0)
         elts = len(diffs.keys())

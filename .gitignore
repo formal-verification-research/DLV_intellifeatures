@@ -13,3 +13,7 @@ pip-selfcheck.json
 *.pyc
 networks/GTSRB/Final_Training/*
 data/*
+share/*
+opencv/
+opencv_contrib/
+z3/
